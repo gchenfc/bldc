@@ -275,6 +275,30 @@ static THD_FUNCTION(cancom_process_thread, arg) {
 						timeout_reset();
 						break;
 
+					case CAN_PACKET_GET_POS:
+						;
+						int32_t send_index = 0;
+						uint8_t buffer[8];
+						buffer_append_int32(buffer, (int32_t)(mc_interface_get_pid_pos_now() * 1e6), &send_index);
+						comm_can_transmit_eid(app_get_configuration()->controller_id |
+								((uint32_t)CAN_PACKET_POSVAL << 8), buffer, send_index);
+						timeout_reset();
+						break;
+					// case CAN_PACKET_GET_TACH:
+					// 	ind = 0;
+					// 	uint16_t toReset = buffer_get_int16(rxmsg.data8, &ind);
+					// 	// Send status message
+					// 	int32_t send_index = 0;
+					// 	uint8_t buffer[8];
+					// 	buffer_append_int32(buffer, (int32_t)mc_interface_get_rpm(), &send_index);
+					// 	buffer_append_int16(buffer, (int16_t)(mc_interface_get_tot_current() * 10.0), &send_index);
+					// 	buffer_append_int16(buffer, (int16_t)(mc_interface_get_duty_cycle_now() * 1000.0), &send_index);
+					// 	// buffer_append_int32(buffer, (int32_t)mc_interface_get_tachometer_value(toReset==1), &send_index);
+					// 	comm_can_transmit_eid(app_get_configuration()->controller_id |
+					// 			((uint32_t)CAN_PACKET_TACHVAL << 8), buffer, send_index);
+					// 	timeout_reset();
+					// 	break;
+
 					default:
 						break;
 					}
@@ -324,6 +348,7 @@ static THD_FUNCTION(cancom_status_thread, arg) {
 			buffer_append_int32(buffer, (int32_t)mc_interface_get_rpm(), &send_index);
 			buffer_append_int16(buffer, (int16_t)(mc_interface_get_tot_current() * 10.0), &send_index);
 			buffer_append_int16(buffer, (int16_t)(mc_interface_get_duty_cycle_now() * 1000.0), &send_index);
+			// buffer_append_int16(buffer, (int16_t)mc_interface_get_tachometer_value(false), &send_index);
 			comm_can_transmit_eid(app_get_configuration()->controller_id |
 					((uint32_t)CAN_PACKET_STATUS << 8), buffer, send_index);
 		}

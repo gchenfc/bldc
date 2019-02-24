@@ -22,7 +22,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#ifndef DEV
 #include "ch.h"
+#endif
 
 // Data types
 typedef enum {
@@ -512,7 +514,11 @@ typedef enum {
 	CAN_PACKET_SET_CURRENT_REL,
 	CAN_PACKET_SET_CURRENT_BRAKE_REL,
 	CAN_PACKET_SET_CURRENT_HANDBRAKE,
-	CAN_PACKET_SET_CURRENT_HANDBRAKE_REL
+	CAN_PACKET_SET_CURRENT_HANDBRAKE_REL,
+	CAN_PACKET_GET_POS,
+	CAN_PACKET_POSVAL
+	// CAN_PACKET_GET_TACH,
+	// CAN_PACKET_TACHVAL
 } CAN_PACKET_ID;
 
 // Logged fault data
